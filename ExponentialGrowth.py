@@ -1,20 +1,14 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Apr  6 00:41:00 2020
-
-@author: HB
-"""
-
 import numpy as np, pandas as pd
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
 
-dataset = pd.read_csv("./Data/france.csv", usecols =['Dates','Total Cases'], header=0)
+df = pd.read_csv("./Data/Covid19_Data.csv", sep=';')
+df= df[df['Country']=='UK']
 # evenly sampled time at 200ms intervals
 t = np.arange(0., 5., 0.2)
 
 
-Y=dataset['Total Cases']
+Y=df['TotalCases']
 X=np.arange(0.,  len(Y), 1.0)
 
 

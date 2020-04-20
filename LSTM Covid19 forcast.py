@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-# %matplotlib inline
-# from statsmodels.tools.eval_measures import rmse
 from sklearn.preprocessing import MinMaxScaler
 from keras.preprocessing.sequence import TimeseriesGenerator
 from keras.models import Sequential
@@ -15,10 +11,11 @@ from pandas.tseries.offsets import DateOffset
 import warnings
 warnings.filterwarnings("ignore")
 
-stat ='Daily New Cases'
-df = pd.read_csv('Data\italy.csv', usecols= ['Dates',stat])
-df['Dates'] = df['Dates'].str.replace(' ','').str.replace('Apr','2020'+'04').str.replace('Mar','2020'+'03').str.replace('Feb','2020'+'02').str.replace('Jan','2020'+'01')
-df['Dates']= pd.to_datetime(df['Dates'], format='%Y%m%d') 
+
+stat ='DailyNewCases'
+df = pd.read_csv("./Data/Covid19_Data.csv", sep=';')
+df= df[df['Country']=='UK'][['Dates',stat]]
+df['Dates']= pd.to_datetime(df['Dates'], infer_datetime_format=True)
 df = df.set_index("Dates")
 
 
@@ -37,14 +34,13 @@ test = scaler.transform(test)
 generator = TimeseriesGenerator(train, train, length=n_input, batch_size=2)
 # print(len(generator))
 
-
 model = Sequential()
 model.add(LSTM(200, activation='relu', input_shape=(n_input, n_features)))
 model.add(Dropout(0.15))
 model.add(Dense(1))
 model.compile(optimizer='adam', loss='mse')
 
-model.fit_generator(generator,epochs=50)
+model.fit_generator(generator,epochs=100)
 
 pred_list = []
 
@@ -73,7 +69,7 @@ train = scaler.transform(train)
 # n_input = 7
 n_features = 1
 generator = TimeseriesGenerator(train, train, length=n_input, batch_size=2)
-model.fit_generator(generator,epochs=50)
+model.fit_generator(generator,epochs=100)
 
 pred_list = []
 
